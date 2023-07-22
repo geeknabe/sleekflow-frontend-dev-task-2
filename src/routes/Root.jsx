@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Outlet, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import $ from '../styles/global';
 import RickAndMortyLogo from '../assets/images/rick-and-morty-logo.png';
@@ -135,21 +136,26 @@ const LogoContainer = styled(Link)`
 
 const Root = () => {
   return (
-    <Section>
-      <SideBar>
-        <LogoContainer to='/' title='Go to Home'>
-          <img src={RickAndMortyLogo} alt='Rick and Morty logo' />
-        </LogoContainer>
-        <Link to='/contact' title='Go to Contact'>
-          <ContactsIcon />
-          <span>Contact</span>
-        </Link>
-      </SideBar>
-      <Content>
-        <Outlet />
-      </Content>
-      <BackToTop />
-    </Section>
+    <>
+      <Helmet>
+        <title>Rick and Morty Contact Page</title>
+      </Helmet>
+      <Section>
+        <SideBar>
+          <LogoContainer to='/' title='Go to Home'>
+            <img src={RickAndMortyLogo} alt='Rick and Morty logo' />
+          </LogoContainer>
+          <Link to='/contact' title='Go to Contact'>
+            <ContactsIcon />
+            <span>Contact</span>
+          </Link>
+        </SideBar>
+        <Content>
+          <Outlet />
+        </Content>
+        <BackToTop />
+      </Section>
+    </>
   );
 };
 

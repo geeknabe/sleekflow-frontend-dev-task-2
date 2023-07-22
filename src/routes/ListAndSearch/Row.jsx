@@ -72,7 +72,7 @@ const Species = styled.div`
 
 const Row = ({ name, image, species, id }) => {
   return (
-    <Container to={`/contact/${id}`}>
+    <Container to={`/contact/${id}`} title={`Go to ${name}'s contact page`}>
       <ProfilePic>
         <Overlay>
           <VisibilityIcon />

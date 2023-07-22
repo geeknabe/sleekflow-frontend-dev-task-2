@@ -41,7 +41,8 @@ const List = styled.div`
   background-color: #fff;
   padding: 10px 8px;
   border-radius: 10px;
-  width: calc(100% - 8px - 8px - 1px - 1px);
+  /* Width = Full Width - Padding - Border Size */
+  width: calc(100% - 16px - 2px);
 
   &.show {
     opacity: 1;

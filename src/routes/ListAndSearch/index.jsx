@@ -14,6 +14,12 @@ const Container = styled.div`
   height: 100%;
 `;
 
+const Title = styled.h1`
+  font-family: Lato Black;
+  font-size: 30px;
+  margin-bottom: 30px;
+`;
+
 const SearchBarContainer = styled.div`
   position: relative;
   margin-bottom: 10px;
@@ -35,7 +41,7 @@ const SearchInput = styled.input`
   padding: 8px 10px 8px 34px;
   outline: none;
   border-radius: 10px;
-  line-height: 20px;
+  line-height: 1.1em;
   border: 1px solid ${$.color.gray2};
 `;
 
@@ -68,8 +74,6 @@ const FilterTools = styled.div`
     }
   }
 `;
-
-const CharacterList = styled.div``;
 
 const ClearFilter = styled.div`
   font-size: 15px;
@@ -106,15 +110,17 @@ const ListAndSearch = () => {
   });
 
   useEffect(() => {
-    getCharacters({ variables: { page: 1 } });
+    getCharacters({ variables: { page: 10 } });
   }, []);
 
   return (
     <Container>
+      <Title>Contact</Title>
       <SearchBarContainer>
         <SearchIcon />
         <SearchInput
           value={searchTerm || ''}
+          placeholder='Search Characters'
           onChange={(e) => {
             const val = e.target.value;
 
@@ -124,19 +130,20 @@ const ListAndSearch = () => {
       </SearchBarContainer>
       <FilterTools>
         <Dropdown
-          key={`${GENDER}_dropdown`}
-          filterText={GENDER}
-          activeFilter={genderFilter}
-          setActiveFilter={setGenderFilter}
-          options={genderOptions}
-        />
-        <Dropdown
           key={`${STATUS}_dropdown`}
           filterText={STATUS}
           activeFilter={statusFilter}
           setActiveFilter={setStatusFilter}
           options={statusOptions}
         />
+        <Dropdown
+          key={`${GENDER}_dropdown`}
+          filterText={GENDER}
+          activeFilter={genderFilter}
+          setActiveFilter={setGenderFilter}
+          options={genderOptions}
+        />
+
         {statusFilter !== STATUS || genderFilter !== GENDER ? (
           <ClearFilter
             onClick={() => {
@@ -150,7 +157,7 @@ const ListAndSearch = () => {
           ''
         )}
       </FilterTools>
-      <CharacterList>
+      <div>
         {loading ? (
           <Loading />
         ) : (
@@ -168,7 +175,7 @@ const ListAndSearch = () => {
               return <Row id={id} key={key} name={name} image={image} species={species} />;
             })
         )}
-      </CharacterList>
+      </div>
     </Container>
   );
 };

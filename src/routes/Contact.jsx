@@ -40,6 +40,7 @@ const Name = styled.h1`
   font-family: Lato Black;
   color: ${$.color.lightblue};
   font-size: 40px;
+  /* Width = Full Width - Profile Pic Size */
   width: calc(100% - 200px);
 
   ${$.device.mobile} {
@@ -72,7 +73,7 @@ const InfoRow = styled.div`
     display: block;
 
     &:first-child {
-      width: 25%;
+      width: 30%;
       text-transform: uppercase;
       font-family: Lato Black;
       font-size: 15px;
@@ -80,7 +81,8 @@ const InfoRow = styled.div`
       color: ${$.color.lightblue};
     }
     &:last-child {
-      width: 75%;
+      width: 70%;
+      align-self: flex-start;
       font-size: 15px;
     }
   }
@@ -163,7 +165,9 @@ const Contact = () => {
   }, []);
 
   if (characterDetails.error) {
-    return <div>An error occurred.</div>;
+    return (
+      <div>Looks like the character does not exist. Please try again with other characters.</div>
+    );
   }
 
   if (loading) {
@@ -201,7 +205,7 @@ const Contact = () => {
           <span>{characterDetails.origin?.name}</span>
         </InfoRow>
         <InfoRow>
-          <span>Created</span>
+          <span>Created Date</span>
           <span>
             {new Date(characterDetails.created).toLocaleDateString('en-US', {
               timeZone: 'Asia/Hong_Kong',

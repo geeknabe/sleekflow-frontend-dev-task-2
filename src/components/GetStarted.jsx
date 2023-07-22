@@ -18,7 +18,7 @@ const Container = styled.div`
 
 const Message = styled.h2`
   font-size: 18px;
-  line-height: 21px;
+  line-height: 1.1em;
   font-family: Lato Black;
   text-align: center;
   color: ${$.color.greenlime};
