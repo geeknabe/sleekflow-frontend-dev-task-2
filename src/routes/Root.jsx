@@ -4,6 +4,7 @@ import { Outlet, Link } from 'react-router-dom';
 import $ from '../styles/global';
 import RickAndMortyLogo from '../assets/images/rick-and-morty-logo.png';
 import { ReactComponent as ContactsIcon } from '../assets/icons/contacts.svg';
+import BackToTop from '../components/BackToTop';
 
 const Section = styled.section`
   display: flex;
@@ -147,6 +148,7 @@ const Root = () => {
       <Content>
         <Outlet />
       </Content>
+      <BackToTop />
     </Section>
   );
 };

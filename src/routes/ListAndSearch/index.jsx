@@ -98,7 +98,7 @@ const ListAndSearch = () => {
   const [characters, setCharacters] = useState([]);
   const [getCharacters, { loading }] = useLazyQuery(getCharactersGQL, {
     onCompleted: ({ characters: { results } }) => {
-      setCharacters(addKeys(results));
+      setCharacters([...characters, ...addKeys(results)]);
     },
     onError: (e) => {
       console.log(e);
@@ -137,14 +137,18 @@ const ListAndSearch = () => {
           setActiveFilter={setStatusFilter}
           options={statusOptions}
         />
-        <ClearFilter
-          onClick={() => {
-            setStatusFilter(STATUS);
-            setGenderFilter(GENDER);
-          }}
-        >
-          Clear Filter
-        </ClearFilter>
+        {statusFilter !== STATUS || genderFilter !== GENDER ? (
+          <ClearFilter
+            onClick={() => {
+              setStatusFilter(STATUS);
+              setGenderFilter(GENDER);
+            }}
+          >
+            Clear Filter
+          </ClearFilter>
+        ) : (
+          ''
+        )}
       </FilterTools>
       <CharacterList>
         {loading ? (
