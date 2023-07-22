@@ -1,17 +1,68 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+
+import './styles/reset.css';
+import './styles/global.css';
+import Root from './routes/Root';
+import ErrorPage from './routes/ErrorPage';
+import Contact from './routes/Contact';
+import ListAndSearch from './routes/ListAndSearch';
+import GetStarted from './components/GetStarted';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: '/',
+        element: <GetStarted />,
+      },
+      {
+        path: 'contact/',
+        element: <ListAndSearch />,
+      },
+      {
+        path: 'contact/:contactId',
+        element: <Contact />,
+      },
+    ],
+  },
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const httpLink = new HttpLink({
+  uri: 'https://rickandmortyapi.com/graphql',
+});
+
+const cache = new InMemoryCache();
+
+const apolloClient = new ApolloClient({
+  cache,
+  link: httpLink,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
+  },
+});
+
+root.render(
+  <StrictMode>
+    <ApolloProvider client={apolloClient}>
+      <RouterProvider router={router} />
+    </ApolloProvider>
+  </StrictMode>,
+);
