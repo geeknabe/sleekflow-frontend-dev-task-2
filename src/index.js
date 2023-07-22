@@ -5,11 +5,13 @@ import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from '@apollo/c
 
 import './styles/reset.css';
 import './styles/global.css';
+import './styles/fonts.css';
 import Root from './routes/Root';
 import ErrorPage from './routes/ErrorPage';
 import Contact from './routes/Contact';
 import ListAndSearch from './routes/ListAndSearch';
 import GetStarted from './components/GetStarted';
+import NotFound from './routes/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 

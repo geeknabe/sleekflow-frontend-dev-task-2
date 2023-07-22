@@ -1,4 +1,9 @@
 body {
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: Lato Light;
   font-size: 16px;
+}
+
+a {
+  text-decoration: none;
+  font-family: Lato Regular;
 }

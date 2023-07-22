@@ -1,3 +1,4 @@
 import getCharactersGQL from './getCharactersGQL';
+import getCharacterGQL from './getCharacterGQL';
 
-export { getCharactersGQL };
+export { getCharactersGQL, getCharacterGQL };

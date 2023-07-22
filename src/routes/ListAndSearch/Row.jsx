@@ -1,19 +1,50 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-const Container = styled.div`
+import $ from '../../styles/global';
+import { ReactComponent as VisibilityIcon } from '../../assets/icons/visibility.svg';
+
+const Overlay = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+
+  & > svg {
+    width: 32px;
+    height: 32px;
+    fill: #fff;
+  }
+`;
+
+const Container = styled(Link)`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${$.color.gray2};
+  padding: 10px 0;
+
+  &:hover {
+    ${Overlay} {
+      opacity: 0.5;
+    }
+  }
 `;
 
 const ProfilePic = styled.div`
   overflow: hidden;
   border-radius: 999px;
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   margin-right: 10px;
+  position: relative;
 
   & > img {
     width: 100%;
@@ -22,17 +53,30 @@ const ProfilePic = styled.div`
 `;
 
 const Info = styled.div`
-  width: calc(100% - 100px - 10px);
+  /* width = Full Width - Profile Pic Width - Profile Pic Margin Right */
+  width: calc(100% - 60px - 10px);
 `;
 
-const Name = styled.div``;
+const Name = styled.div`
+  font-size: 19px;
+  line-height: 1.1em;
+  font-family: Lato Black;
+`;
 
-const Species = styled.div``;
+const Species = styled.div`
+  font-size: 15px;
+  line-height: 1.1em;
+  color: ${$.color.greenlime};
+  font-family: Lato Regular;
+`;
 
-const Row = ({ name, image, species }) => {
+const Row = ({ name, image, species, id }) => {
   return (
-    <Container>
+    <Container to={`/contact/${id}`}>
       <ProfilePic>
+        <Overlay>
+          <VisibilityIcon />
+        </Overlay>
         <img src={image} alt={`${name} profile picture`} />
       </ProfilePic>
       <Info>
@@ -44,6 +88,7 @@ const Row = ({ name, image, species }) => {
 };
 
 Row.propTypes = {
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   species: PropTypes.string.isRequired,

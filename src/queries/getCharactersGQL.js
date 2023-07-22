@@ -4,6 +4,7 @@ const getCharactersGQL = gql`
   query getCharacters($page: Int!) {
     characters(page: $page) {
       results {
+        id
         name
         image
         species

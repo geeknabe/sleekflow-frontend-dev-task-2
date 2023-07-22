@@ -1,86 +1,106 @@
-import { Form } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useLazyQuery } from '@apollo/client';
+import { useLocation } from 'react-router-dom';
+
+import { getCharacterGQL } from '../queries';
+import { addKeys } from '../helper';
+
+const Header = styled.div``;
+
+const ProfilePic = styled.div`
+  width: 200px;
+  height: 200px;
+
+  & > img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+const Name = styled.h1``;
+
+const SectionTitle = styled.h2``;
+
+const PersonalInfo = styled.div``;
+
+const TableContainer = styled.div``;
+
+const Table = styled.table``;
 
 const Contact = () => {
-  const contact = {
-    first: 'Your',
-    last: 'Name',
-    avatar: 'https://placekitten.com/g/200/200',
-    twitter: 'your_handle',
-    notes: 'Some notes',
-    favorite: true,
-  };
+  const { pathname } = useLocation();
+  const [characterDetails, setCharacterDetails] = useState({});
+  const [getCharacter] = useLazyQuery(getCharacterGQL, {
+    onCompleted: ({ character }) => {
+      if (character) {
+        console.log(character);
+        setCharacterDetails({ ...character, episode: addKeys(character.episode) });
+      }
+    },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
+
+  useEffect(() => {
+    const id = Number(pathname.split('/')[2]);
+
+    if (id) {
+      getCharacter({ variables: { id } });
+    } else {
+      setCharacterDetails({ error: true });
+    }
+  }, []);
+
+  if (characterDetails.error) {
+    return <div>An error occurred.</div>;
+  }
 
   return (
-    <div id='contact'>
-      <div>
-        <img key={contact.avatar} src={contact.avatar || null} />
-      </div>
-
-      <div>
-        <h1>
-          {contact.first || contact.last ? (
-            <>
-              {contact.first} {contact.last}
-            </>
-          ) : (
-            <i>No Name</i>
-          )}{' '}
-          <Favorite contact={contact} />
-        </h1>
-
-        {contact.twitter && (
-          <p>
-            <a target='_blank' href={`https://twitter.com/${contact.twitter}`} rel='noreferrer'>
-              {contact.twitter}
-            </a>
-          </p>
-        )}
-
-        {contact.notes && <p>{contact.notes}</p>}
-
-        <div>
-          <Form action='edit'>
-            <button type='submit'>Edit</button>
-          </Form>
-          <Form
-            method='post'
-            action='destroy'
-            onSubmit={(event) => {
-              if (!confirm('Please confirm you want to delete this record.')) {
-                event.preventDefault();
-              }
-            }}
-          >
-            <button type='submit'>Delete</button>
-          </Form>
-        </div>
-      </div>
-    </div>
+    <>
+      <Header>
+        <ProfilePic>
+          <img src={characterDetails.image} />
+        </ProfilePic>
+        <Name>{characterDetails.name}</Name>
+      </Header>
+      <SectionTitle>Personal Info</SectionTitle>
+      <PersonalInfo>
+        <div>{characterDetails.status}</div>
+        <div>{characterDetails.gender}</div>
+        <div>{characterDetails.species}</div>
+        <div>{characterDetails.location?.name}</div>
+        <div>{characterDetails.origin?.name}</div>
+        <div>{characterDetails.created}</div>
+      </PersonalInfo>
+      <SectionTitle>Episodes</SectionTitle>
+      <TableContainer>
+        <Table>
+          <thead>
+            <tr>
+              <td>Name</td>
+              <td>Air Date</td>
+              <td>Episode</td>
+              <td>Created Date</td>
+            </tr>
+          </thead>
+          <tbody>
+            {characterDetails?.episode?.map(({ key, name, air_date: aired, episode, created }) => {
+              return (
+                <tr key={key}>
+                  <td>{name}</td>
+                  <td>{aired}</td>
+                  <td>{episode}</td>
+                  <td>{created}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </TableContainer>
+    </>
   );
-};
-
-const Favorite = ({ contact }) => {
-  // yes, this is a `let` for later
-  let favorite = contact.favorite;
-
-  return (
-    <Form method='post'>
-      <button
-        name='favorite'
-        value={favorite ? 'false' : 'true'}
-        aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
-      >
-        {favorite ? '★' : '☆'}
-      </button>
-    </Form>
-  );
-};
-
-Favorite.propTypes = {
-  contact: PropTypes.shape({
-    favorite: PropTypes.string,
-  }).isRequired,
 };
 
 export default Contact;

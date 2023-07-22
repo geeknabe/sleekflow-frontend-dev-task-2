@@ -19,8 +19,14 @@ const Container = styled.div`
 const Message = styled.h2`
   font-size: 18px;
   line-height: 21px;
+  font-family: Lato Black;
   text-align: center;
   color: ${$.color.greenlime};
+
+  & a {
+    font-family: Lato Black;
+    font-size: 18px;
+  }
 `;
 
 const GetStarted = () => {

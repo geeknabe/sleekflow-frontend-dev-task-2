@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import $ from '../../styles/global';
+import RotatingDownChevron from './RotatingDownChevron';
+import { useOutsideClick } from '../../helper';
 
 const Container = styled.div`
   display: inline-block;
@@ -10,10 +12,23 @@ const Container = styled.div`
   border: 1px solid ${$.color.gray2};
   padding: 4px 8px;
   border-radius: 10px;
-  min-width: 80px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
-const Text = styled.div``;
+const Text = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 100px;
+
+  & > span {
+    font-size: 15px;
+  }
+`;
 
 const List = styled.div`
   pointer-events: none;
@@ -21,9 +36,10 @@ const List = styled.div`
   position: absolute;
   top: 35px;
   left: 0;
+  z-index: 1;
   border: 1px solid ${$.color.gray2};
   background-color: #fff;
-  padding: 4px 8px;
+  padding: 10px 8px;
   border-radius: 10px;
   width: calc(100% - 8px - 8px - 1px - 1px);
 
@@ -31,35 +47,72 @@ const List = styled.div`
     opacity: 1;
     pointer-events: initial;
   }
+
+  & > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+
+    & > input {
+      pointer-events: none;
+    }
+  }
+
+  ${$.device.mobile} {
+    & > div {
+      &:not(:last-child) {
+        margin-bottom: 15px;
+      }
+    }
+  }
 `;
 
 const Dropdown = ({ activeFilter, setActiveFilter, filterText, options }) => {
+  const [counter, setCounter] = useState(0);
   const [dropdownState, setDropdownState] = useState(false);
+  const containerRef = useRef(null);
+
+  useOutsideClick([containerRef], () => {
+    setDropdownState((prev) => {
+      if (prev === true) {
+        setCounter((prevCounter) => prevCounter + 1);
+        return false;
+      }
+
+      return prev;
+    });
+  });
 
   return (
-    <Container>
+    <Container ref={containerRef}>
       <Text
         onClick={() => {
           setDropdownState((prev) => !prev);
+          setCounter((prev) => prev + 1);
         }}
       >
-        {activeFilter}
+        <span>{activeFilter}</span>
+        <RotatingDownChevron counter={counter} />
       </Text>
       <List className={dropdownState ? 'show' : ''}>
         {options.map(({ text, key }) => {
           return (
-            <div key={key}>
+            <div
+              key={key}
+              onClick={() => {
+                setActiveFilter(text);
+              }}
+            >
               <span>{text}</span>
-              <input
-                type='radio'
-                name={filterText}
-                checked={activeFilter === text}
-                onClick={(res) => {
-                  setActiveFilter((prev) => {
-                    return res.target.checked && prev !== text ? text : filterText;
-                  });
-                }}
-              />
+              <input type='radio' readOnly name={filterText} checked={activeFilter === text} />
             </div>
           );
         })}
